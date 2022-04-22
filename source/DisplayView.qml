@@ -7,7 +7,7 @@ Item {
     signal sendSettingInfoSignal(int state)
     signal sendDataSignal(string data)
 
-    function clearDisplayText(){ //xoa du lieu xuat tren man hinh
+    function clearDisplayText(){ 
         displaText.clear()
     }
 
