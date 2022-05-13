@@ -6,10 +6,13 @@ Rectangle {
     id:root
     property bool sendRadionBtnStatus: true
     property bool recRadionBtnStatus: true
-
     function setModel(s){
         myModel.append({s})
     }
+    function rescan_list(){
+        myModel.clear()
+    }
+
     function getSetting(state){
         var value=portComBox.currentText+'/'+baudCombox.currentText+'/'+databaseCombox.currentText
         return value
@@ -41,7 +44,7 @@ Rectangle {
                 delegate: ItemDelegate{
                     id:itmdlg
                     height: 30
-                    width: parent.width
+                    width: portComBox.width
                     text: modelData
                     background: Rectangle{
                         id:bacRect
@@ -112,13 +115,14 @@ Rectangle {
         }
 
         ColumnLayout{
-
+            //height: 10
             GroupBox {
                 Layout.columnSpan:2
                 Layout.fillWidth: true
                 background: Rectangle {
                     anchors.fill: parent
                     Rectangle{
+                        id: frame1
                         border.color: "gray"
                         border.width: 1
                         anchors.topMargin: 5
@@ -131,21 +135,26 @@ Rectangle {
                         width: title.width
                         height: title.height
                         anchors.top:parent.top
-                        x:20
-
+                        color: "transparent"
+                        //x:20
+                        anchors.centerIn: parent
                         Text{
                             id:title
                             text: "Send setting"
+                            anchors.bottom: parent.bottom
                             font.pixelSize: 15
+                            anchors.bottomMargin: 18
                         }
                     }
                 }
 
                 RowLayout{
                     anchors.fill: parent
-
+                    Layout.fillWidth: true
                     RadioButton{
                         text: "ASCII"
+                        Layout.topMargin: 6
+                        anchors.leftMargin: 7
                         font.pointSize :12;
                         font.family: "Helvetica";
                         font.bold: true
@@ -157,6 +166,9 @@ Rectangle {
 
                     RadioButton{
                         text: "HEX"
+                        Layout.topMargin: 6
+                        //Layout.alignment: parent.right
+                        //Layout.leftMargin: 3
                         font.pointSize :12;
                         font.family: "Helvetica";
                         font.bold: true
@@ -167,8 +179,9 @@ Rectangle {
                     }
 
                 }
-            }
 
+            }
+/*
             GroupBox {
                 id:groupRec
                 Layout.columnSpan:2
@@ -223,6 +236,7 @@ Rectangle {
                     }
                 }
             }
+            */
         }      
     }
 }

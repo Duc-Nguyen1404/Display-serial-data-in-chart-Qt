@@ -6,14 +6,21 @@ Item {
     id:root
     signal sendSettingInfoSignal(int state)
     signal sendDataSignal(string data)
-
+    property double rmsec:-0.1
+    property double rsec: 0
+    property int count:-1
     function clearDisplayText(){ //xoa du lieu xuat tren man hinh
-        displaText.clear()
+        line.clear()
+        timer.restart()
+        rmsec=-0.1
+        rsec=0
+        count=-1
+        chartView.animationOptions=ChartView.NoAnimation
     }
 
 //    function setDisplyText(data){
 //        //displaText.insert(displaText.length,data)
-//        line.append(cpp_obj.updater(),data)
+//        line.append(cpp_obj.update(),data)
 //    }
 
 
@@ -23,9 +30,7 @@ Item {
     }
     Component.onCompleted: { //display when environment is completely established
         cpp_obj.returnOpenResultSignal.connect(setOpenBtnText)
-//        for (var i = 0; i <= 10; i++) {
-//                 line.append(i, Math.random());
-//             }
+
     }
 
     GridLayout{
@@ -70,43 +75,77 @@ Item {
 
             //display chart in the screen
             ChartView {
-                id: chart
+                id: chartView
                 anchors.fill:parent
                 antialiasing: true
-
+                //animationOptions: ChartView.AllAnimations
+//                backgroundColor: "#00F5F1"
+//                plotAreaColor: "#FFFFFF"
                 LineSeries {
                     id: line
                     name: "Realtime data chart"
+                    width: 3
+                    color: "blue"
                     axisY: ValuesAxis{
                         min: 0.0
                         max: 40.0
-                        tickCount: 6
+                        tickCount: 9
+                        labelFormat: "%.0f"
+                        titleText: "Data"
+                        labelsColor: "#301A4B"
                     }
 //                    axisX: DateTimeAxis{
 //                        tickCount: 5
 //                        format: "hh:mm:ss"
+////                        max: new Date(2022,5,6,9,49,00)
+////                        min: new Date(2022,5,6,9,48,00)
 //                    }
                     axisX: ValuesAxis{
-                        min: 0.0
-                        max: 60.0
+                        titleText: "Second"
+                        labelsColor: "red"
+                        min: 0
+                        max: 5
+                        tickCount: 6
+                        //labelFormat: "%.1f"
                     }
+
                 }
 
-            }
 
+            }
 
         }
         //update time with data
         Timer{
-            id: refreshTimer
-            interval: 1000
-            running: true
+            id: timer
+            interval: 100
+            running: false
             repeat: true
             onTriggered: {
-                if(cpp_obj.readIsMyPortOpen()){
-                line.append(cpp_obj.updater(), cpp_obj.readData_slot())
+                rmsec+=0.1; //realtime variable count
+                count++;
+                if(count%10==0){
+                    rsec++;
                 }
+
+                if(cpp_obj.readIsMyPortOpen()){
+                line.append(rmsec,cpp_obj.readData_slot());
+                } else {
+                    line.append(rmsec,0);
+                }
+                //scroll
+                if(rsec>=5){
+                    chartView.axisX().max=rsec+1;
+                    chartView.axisX().min=chartView.axisX().max-5;
+                } else
+                {
+                    chartView.axisX().max=5;
+                    chartView.axisX().min=0;
+                }
+                chartView.axisX().tickCount=6;
+
             }
+
         }
 
 
@@ -151,6 +190,15 @@ Item {
                     }
                     else{
                         emit: sendSettingInfoSignal(1)   //1 open 0 close
+                    }
+
+                    if(btnStation)
+                        timer.start()
+                    else{
+                        timer.stop()
+                        chartView.animationOptions = ChartView.AllAnimations;
+                        chartView.axisX().min = 0;
+                        chartView.axisX().max = rmsec;
                     }
                 }
             }

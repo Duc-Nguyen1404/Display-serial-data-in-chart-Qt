@@ -50,9 +50,11 @@ ApplicationWindow {
         font.bold: true
         RowLayout{
             Button{
-                text: "Illustrate"
+                text: "Rescan"
                 onClicked: {
-                    ver.visible=true
+//                    ver.visible=true
+                    mySettingView.rescan_list()
+                    cpp_obj.initPort()
                 }
             }
 
@@ -60,6 +62,7 @@ ApplicationWindow {
                 text: "Clear"
                 onClicked: {
                     myDisPlayView.clearDisplayText()
+
                 }
             }
 

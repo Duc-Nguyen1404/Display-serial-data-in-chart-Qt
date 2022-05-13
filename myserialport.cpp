@@ -1,11 +1,15 @@
 ﻿#include "myserialport.h"
 #include <QSerialPortInfo>
 #include <QDebug>
-#include <QTimer>
+//#include <QTimer>
 #include <QTime>
 #include <QDateTime>
 #include <math.h>
+#include <QtCharts/QXYSeries>
+#include <QLine>
+#include <QtCharts/QChart>
 
+//QT_USE_NAMESPACE
 int count=0;
 MySerialPort::MySerialPort(QObject *parent) : QObject(parent)
 {
@@ -13,6 +17,8 @@ MySerialPort::MySerialPort(QObject *parent) : QObject(parent)
     serialBuffer = "";
     parsed_data = "";
     temperature_value = 0.0;
+    //m_series=nullptr;
+    //chart=new QChart();
 
 }
 
@@ -166,11 +172,34 @@ void MySerialPort::setDataBase(int dataBase)
 
 }
 
-qint64 MySerialPort::updater()
+qint64 MySerialPort::update()
 {
 //    return QDateTime::currentSecsSinceEpoch();
-    QTime realtime(QTime::currentTime());
-    return realtime.second();
-
+//    QTime realtime(QTime::currentTime());
+//    return realtime.second();
+    QDateTime time;
+    return time.currentMSecsSinceEpoch();
 }
 
+//void MySerialPort::plot_chart(double x, double y)
+//{
+//    QLineSeries *m_series=new QLineSeries(this);
+//    m_series->append(x,y);  //error
+//    // need to add scroll here
+//    QChart *chart=new QChart();
+//    chart->scroll(x,y);
+
+//}
+//void MySerialPort::plot_chart(QAbstractSeries *series)
+//{
+//    if(series)
+//    {
+//        QChart *chart=new QChart();
+//        static double x_axis=0.0;
+//        QXYSeries *xySeries= static_cast<QXYSeries *>(series);
+//        xySeries->append(x_axis,readData_slot());
+//        chart->scroll(x_axis,0);
+//        x_axis++;
+
+//    }
+//}

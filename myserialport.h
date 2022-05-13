@@ -5,6 +5,9 @@
 #include <QSerialPort>
 #include <QColor>
 #include <QDateTime>
+#include <QtCharts/QLineSeries>
+#include <QtCharts/QChart>
+#include <QAbstractSeries>
 #define ASIIC_TYPE true
 #define HEX_TYPE false
 
@@ -29,7 +32,6 @@ signals:
     void authorChanged();
     void returnOpenResultSignal(bool);
     void receiveData(double);
-
 public slots:
     void setPort();
     void setBaud(int);
@@ -39,13 +41,17 @@ public slots:
     double readData_slot();  //Receive data
     void writeData(QString ,bool);   //send data
     bool readIsMyPortOpen();
-    qint64 updater();
+    qint64 update();
+    //void plot_chart(double x,double y);
+    //void plot_chart(QAbstractSeries *series);
+
 private:
     QString serialBuffer;
     QString parsed_data;
     double temperature_value;
-
-
+//    QLineSeries *m_series;
+    //QChart *chart;
 };
+
 
 #endif // MYSERIALPORT_H
