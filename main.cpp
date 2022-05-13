@@ -1,4 +1,4 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include "myserialport.h"
 
@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     //register c++
     qmlRegisterType<MySerialPort>("MyCppObject",1,0,"CppObject");
     QCoreApplication::setOrganizationName("something");

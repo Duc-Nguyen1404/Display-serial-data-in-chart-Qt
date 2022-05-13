@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QSerialPort>
 #include <QColor>
+#include <QDateTime>
 #define ASIIC_TYPE true
 #define HEX_TYPE false
 
@@ -27,6 +28,7 @@ signals:
     void displayRecDataSignal(QString);
     void authorChanged();
     void returnOpenResultSignal(bool);
+    void receiveData(double);
 
 public slots:
     void setPort();
@@ -34,11 +36,14 @@ public slots:
     void setDataBase(int);
     void initPort();
     void openPort(QString value);
-    void readData_slot();  //Receive data
+    double readData_slot();  //Receive data
     void writeData(QString ,bool);   //send data
     bool readIsMyPortOpen();
-
-
+    qint64 updater();
+private:
+    QString serialBuffer;
+    QString parsed_data;
+    double temperature_value;
 
 
 };

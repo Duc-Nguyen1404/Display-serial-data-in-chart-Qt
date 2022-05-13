@@ -2,11 +2,18 @@
 #include <QSerialPortInfo>
 #include <QDebug>
 #include <QTimer>
+#include <QTime>
+#include <QDateTime>
+#include <math.h>
 
 int count=0;
 MySerialPort::MySerialPort(QObject *parent) : QObject(parent)
 {
     myPort=new QSerialPort;
+    serialBuffer = "";
+    parsed_data = "";
+    temperature_value = 0.0;
+
 }
 
 MySerialPort::~MySerialPort()
@@ -16,7 +23,7 @@ MySerialPort::~MySerialPort()
 
 bool MySerialPort::readIsMyPortOpen()
 {
-    qDebug()<<myPort->isOpen();
+    //qDebug()<<myPort->isOpen();
     return myPort->isOpen();
 
 }
@@ -49,10 +56,7 @@ void MySerialPort::openPort(QString value) //receive signal and get the variable
             connect(myPort,&QSerialPort::readyRead,this,&MySerialPort::readData_slot);
             qDebug()<<myPort->portName()<<myPort->baudRate()<<myPort->dataBits();
         }
-        else
-        {
 
-        }
 
     }
     else
@@ -64,27 +68,57 @@ void MySerialPort::openPort(QString value) //receive signal and get the variable
 
 }
 
-void MySerialPort::readData_slot()
+double MySerialPort::readData_slot()
 {
     QByteArray buff;
-    buff=myPort->readAll();
-    if(recDataModel==ASIIC_TYPE)  //ASIIC
-    {
-        emit displayRecDataSignal(buff.data());
-    }
-    else
-    {
-        QString str=buff.toHex();
-        QString str1;
-        for(int i = 0; i < str.length()/2;i++)
-        {
-            str1 += str.mid(i*2,2) + " ";
-        }
 
-        emit displayRecDataSignal(str1);
+    QStringList buffer_split = serialBuffer.split(","); //  split the serialBuffer string, parsing with ',' as the separator
+    if(buffer_split.length() < 3){
+        buff=myPort->readAll();
+        serialBuffer = serialBuffer + QString::fromStdString(buff.toStdString());
+        buff.clear();
     }
+    else{
+        // the second element of buffer_split is parsed correctly, update the temperature value on temp_lcdNumber
+        serialBuffer = "";
+        //qDebug() << buffer_split<< "\n";
+        parsed_data = buffer_split[1];
+        //temperature_value = (9/5.0) * (parsed_data.toDouble()) + 32; // convert to fahrenheit
+        temperature_value = parsed_data.toDouble(); // celsius
+        qDebug() << "Temperature: " << temperature_value << "\n";
+
+        emit receiveData(temperature_value);
+    }
+    return temperature_value;
+
+//    if(recDataModel==ASIIC_TYPE)  //ASIIC
+//    {
+
+//        emit displayRecDataSignal(buff.data());
+//    }
+//    else
+//    {
+//        QString str=buff.toHex();
+//        QString str1;
+//        for(int i = 0; i < str.length()/2;i++)
+//        {
+//            str1 += str.mid(i*2,2) + " ";
+//        }
+
+//        emit displayRecDataSignal(str1);
+//    }
     //newly insert
-    //QString
+//    QTime realtime(QTime::currentTime());
+//    static double key=0;
+//    if(abs(realtime.second()-key)>=1){
+//        qDebug()<<realtime.second()<<"\n";
+//        key=realtime.second();
+
+//    }
+//    QDateTime time;
+//    qDebug()<<time.currentSecsSinceEpoch()<<"\n";
+
+
 }
 
 void MySerialPort::writeData(QString s,bool dataModel)
@@ -132,4 +166,11 @@ void MySerialPort::setDataBase(int dataBase)
 
 }
 
+qint64 MySerialPort::updater()
+{
+//    return QDateTime::currentSecsSinceEpoch();
+    QTime realtime(QTime::currentTime());
+    return realtime.second();
+
+}
 

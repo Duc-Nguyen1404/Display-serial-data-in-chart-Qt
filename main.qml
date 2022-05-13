@@ -19,19 +19,21 @@ ApplicationWindow {
         cpp_obj.openPort(value)
     }
 
-    function setRecDisplayData(data){
-        myDisPlayView.setDisplyText(data)
-   }
+//    function setRecDisplayData(data){
+//        myDisPlayView.setDisplyText(data)
+//   }
     function writeData(data){
         cpp_obj.writeData(data,mySettingView.sendRadionBtnStatus)
     }
+
 
     Component.onCompleted: {
         cpp_obj.portNameSignal.connect(setPortName)
         cpp_obj.initPort()
         myDisPlayView.sendSettingInfoSignal.connect(sendSetting)
         myDisPlayView.sendDataSignal.connect(writeData)
-        cpp_obj.displayRecDataSignal.connect(setRecDisplayData)
+        //cpp_obj.displayRecDataSignal.connect(setRecDisplayData)
+        //cpp_obj.receiveData.connect(setRecDisplayData)
     }
 
     CppObject{  //c++object

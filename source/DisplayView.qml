@@ -7,13 +7,15 @@ Item {
     signal sendSettingInfoSignal(int state)
     signal sendDataSignal(string data)
 
-    function clearDisplayText(){ 
+    function clearDisplayText(){ //xoa du lieu xuat tren man hinh
         displaText.clear()
     }
 
-    function setDisplyText(data){
-        displaText.insert(displaText.length,data)
-    }
+//    function setDisplyText(data){
+//        //displaText.insert(displaText.length,data)
+//        line.append(cpp_obj.updater(),data)
+//    }
+
 
     function setOpenBtnText(station){
         openBtn.btnStation=station
@@ -21,6 +23,9 @@ Item {
     }
     Component.onCompleted: { //display when environment is completely established
         cpp_obj.returnOpenResultSignal.connect(setOpenBtnText)
+//        for (var i = 0; i <= 10; i++) {
+//                 line.append(i, Math.random());
+//             }
     }
 
     GridLayout{
@@ -35,9 +40,8 @@ Item {
             border.width: 1
             border.color: "gray"
             height: 4
-
+/*
             //display data in string type to the screen
-
             ScrollView { //when the text is too long to display ScrollBar will appear
                 anchors.fill:parent
                 clip: true
@@ -62,7 +66,47 @@ Item {
 
                 }
             }
+            */
 
+            //display chart in the screen
+            ChartView {
+                id: chart
+                anchors.fill:parent
+                antialiasing: true
+
+                LineSeries {
+                    id: line
+                    name: "Realtime data chart"
+                    axisY: ValuesAxis{
+                        min: 0.0
+                        max: 40.0
+                        tickCount: 6
+                    }
+//                    axisX: DateTimeAxis{
+//                        tickCount: 5
+//                        format: "hh:mm:ss"
+//                    }
+                    axisX: ValuesAxis{
+                        min: 0.0
+                        max: 60.0
+                    }
+                }
+
+            }
+
+
+        }
+        //update time with data
+        Timer{
+            id: refreshTimer
+            interval: 1000
+            running: true
+            repeat: true
+            onTriggered: {
+                if(cpp_obj.readIsMyPortOpen()){
+                line.append(cpp_obj.updater(), cpp_obj.readData_slot())
+                }
+            }
         }
 
 
