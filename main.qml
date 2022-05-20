@@ -9,7 +9,7 @@ ApplicationWindow {
     visible: true
     width: 700
     height: 480
-    title: qsTr("Hello World")
+    title: qsTr("Serial data plot")
 
     function setPortName( str){
         mySettingView.setModel(str)

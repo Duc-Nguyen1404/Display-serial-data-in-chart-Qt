@@ -21,6 +21,10 @@ Rectangle {
     onRecRadionBtnStatusChanged:{
         cpp_obj.recDataModel=recRadionBtnStatus
     }
+//    Component.onCompleted: { //on the first start nothing is display in the combo box
+//        baudCombox.displayText=" ";
+//        databaseCombox.displayText=" ";
+//    }
 
     ColumnLayout{
         anchors.fill: parent
@@ -66,8 +70,8 @@ Rectangle {
                 id:baudCombox
                 Layout.minimumHeight: 30
                 Layout.maximumHeight: 30
-                //model: ["2400","4800", "9600","19200","38400"]
-                model: ["9600"]
+                model: ["2400","4800", "9600","19200","38400"]
+                //model: ["9600"]
                 delegate: ItemDelegate{
                     id:itmdlg1
                     height: 30
@@ -79,8 +83,8 @@ Rectangle {
                     }
                 }
                 onCurrentTextChanged: {
-                    //cpp_obj.setBaud(Number(currentText))
-                    cpp_obj.setBaud(9600)
+                    cpp_obj.setBaud(Number(currentText))
+                    //cpp_obj.setBaud(9600)
                 }
             }
         }
@@ -94,8 +98,8 @@ Rectangle {
                 id:databaseCombox
                 Layout.minimumHeight: 30
                 Layout.maximumHeight: 30
-                //model: [ "5", "6", "7", "8"]
-                model: [ "8"]
+                model: [ "5", "6", "7", "8"]
+                //model: [ "8"]
                 delegate: ItemDelegate{
                     id:itmdlg2
                     height: 30
@@ -108,8 +112,8 @@ Rectangle {
                     }
                 }
                 onCurrentTextChanged: {
-                    //cpp_obj.setDataBase(Number(currentText))
-                    cpp_obj.setDataBase(8)
+                    cpp_obj.setDataBase(Number(currentText))
+                    //cpp_obj.setDataBase(8)
                 }
             }
         }

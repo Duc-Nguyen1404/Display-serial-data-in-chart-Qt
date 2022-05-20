@@ -45,6 +45,10 @@ Item {
             border.width: 1
             border.color: "gray"
             height: 4
+//            gradient: Gradient {
+//                GradientStop { position: 0.0; color: "#82DBD8" }
+//            }
+
 /*
             //display data in string type to the screen
             ScrollView { //when the text is too long to display ScrollBar will appear
@@ -81,7 +85,7 @@ Item {
                 //animationOptions: ChartView.AllAnimations
 //                backgroundColor: "#00F5F1"
 //                plotAreaColor: "#FFFFFF"
-                LineSeries {
+                SplineSeries {
                     id: line
                     name: "Realtime data chart"
                     width: 3
@@ -104,8 +108,8 @@ Item {
                         titleText: "Second"
                         labelsColor: "red"
                         min: 0
-                        max: 5
-                        tickCount: 6
+                        max: 10
+                        tickCount: 11
                         //labelFormat: "%.1f"
                     }
 
@@ -118,13 +122,13 @@ Item {
         //update time with data
         Timer{
             id: timer
-            interval: 100
+            interval: 10 //100hz
             running: false
             repeat: true
             onTriggered: {
-                rmsec+=0.1; //realtime variable count
+                rmsec+=0.01; //realtime variable count 0.01s=10ms
                 count++;
-                if(count%10==0){
+                if(count%100==0){
                     rsec++;
                 }
 
@@ -134,15 +138,15 @@ Item {
                     line.append(rmsec,0);
                 }
                 //scroll
-                if(rsec>=5){
+                if(rsec>=10){
                     chartView.axisX().max=rsec+1;
-                    chartView.axisX().min=chartView.axisX().max-5;
+                    chartView.axisX().min=chartView.axisX().max-10;
                 } else
                 {
-                    chartView.axisX().max=5;
+                    chartView.axisX().max=10;
                     chartView.axisX().min=0;
                 }
-                chartView.axisX().tickCount=6;
+                chartView.axisX().tickCount=11;
 
             }
 
